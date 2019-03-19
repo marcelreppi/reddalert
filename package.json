@@ -1,26 +1,30 @@
 {
-  "name": "reddit-notifier",
+  "name": "reddalert",
   "version": "1.0.0",
   "description": "A service that sends email notifications for reddit posts based on keywords for specified subreddits",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon start.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcelreppi/reddit-notifier.git"
+    "url": "git+https://github.com/marcelreppi/reddalert.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/marcelreppi/reddit-notifier/issues"
+    "url": "https://github.com/marcelreppi/reddalert/issues"
   },
-  "homepage": "https://github.com/marcelreppi/reddit-notifier#readme",
+  "homepage": "https://github.com/marcelreppi/reddalert#readme",
   "dependencies": {
     "dotenv": "^7.0.0",
+    "express": "^4.16.4",
     "node-cron": "^2.0.3",
-    "nodemailer-promise": "^2.0.0",
+    "nodemailer": "^5.1.1",
     "rss-parser": "^3.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }

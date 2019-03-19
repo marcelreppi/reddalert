@@ -1,26 +1,21 @@
 const RSSParser = require('rss-parser')
-const mailerPromise = require('nodemailer-promise')
+const nodemailer = require('nodemailer')
 
 const latestPostIds = {}
 
-module.exports.fetchRSSFeeds = async function(subreddits) {
+module.exports.fetchRSSFeed = async function(subreddit) {
   const rssParser = new RSSParser
-  const feedPromises = subreddits.map( sr => {
-    let query = '?limit=100'
-    if (latestPostIds[sr]) {
-      query += `&before=${latestPostIds[sr]}`
-    }
-    return rssParser.parseURL(`https://www.reddit.com/r/${sr}/new.rss${query}`) 
-  })
+  let query = '?limit=100'
+  if (latestPostIds[subreddit]) {
+    query += `&before=${latestPostIds[subreddit]}`
+  }
+  const feed = await rssParser.parseURL(`https://www.reddit.com/r/${subreddit}/new.rss${query}`) 
 
-  const feeds = await Promise.all(feedPromises)
-  feeds.forEach( (f, i) => {
-    if (f.items.length > 0) latestPostIds[subreddits[i]] = f.items[0].id
-  })
-  return feeds
+  if (feed.items.length > 0) latestPostIds[subreddit] = feed.items[0].id
+  return feed
 }
 
-const sendMail = mailerPromise.config({
+const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
   secure: false,
@@ -28,17 +23,25 @@ const sendMail = mailerPromise.config({
     user: process.env.MAIL_SENDER,
     pass: process.env.MAIL_PW
   }
-})
+});
 
-module.exports.sendNotification = async function(link, subreddit) {
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Mail server is ready");
+  }
+});
+
+module.exports.sendNotification = async function(posts, subreddit) {
   const mailOptions = {
     from: process.env.MAIL_SENDER,
     to: process.env.MAIL_RECEIVER,
     subject: 'New interesting post in subreddit ' + subreddit,
-    text: `${link}`
+    text: posts.map( p => `${p.title}\n${p.link}`).join("\n\n")
   };
-  
-  const info = await sendMail(mailOptions)
+
+  const info = await transporter.sendMail(mailOptions)
   console.log(info)
 
   return info
