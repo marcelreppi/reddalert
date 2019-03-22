@@ -30,13 +30,11 @@ sendNotification = async function(email, subreddit, posts) {
     text: content
   };
 
-  await bot.telegram.sendMessage(process.env.MY_CHAT_ID, `${subject}:\n\n${content}`)
-  if (process.env.NODE_ENV != "dev") {
+  if (process.env.NODE_ENV == "dev") {
+    return await bot.telegram.sendMessage(process.env.MY_CHAT_ID, `${subject}:\n\n${content}`)
+  } else {
     return await transporter.sendMail(mailOptions)
   }
-  
-  
-  return // await transporter.sendMail(mailOptions)
 }
 
 module.exports = { sendNotification }
