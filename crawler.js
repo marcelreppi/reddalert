@@ -5,7 +5,6 @@ const { sendNotification } = require("./notify")
 
 const bot = require("./bot.js")
 
-const subreddits = require('./subreddits.json').subreddits
 const latestPostIds = {}
 
 async function fetchJSONFeed(subreddit) {

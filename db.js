@@ -7,6 +7,7 @@ const docClient = new AWS.DynamoDB.DocumentClient({
 const TableName = `reddalert-subreddits${process.env.NODE_ENV == "dev" ? "-dev" : ""}`
 
 exports.getUserData = async function(email) {
+  email = email.toLowerCase()
   const params = {
     TableName,
     FilterExpression : "email = :userMail",
@@ -25,6 +26,9 @@ exports.getAllSubreddits = async function() {
 }
 
 exports.addSubreddit = async function(email, subreddit, keywords) {
+  email = email.toLowerCase()
+  subreddit = subreddit.toLowerCase()
+  keywords = keywords.map( kw => kw.toLowerCase() )
   const params = {
     TableName,
     Item: {
@@ -40,6 +44,9 @@ exports.addSubreddit = async function(email, subreddit, keywords) {
 }
 
 exports.addKeyword = async function(email, subreddit, keyword) {
+  email = email.toLowerCase()
+  subreddit = subreddit.toLowerCase()
+  keyword = keyword.toLowerCase()
   const params = {
     TableName,
     Key: {
@@ -58,6 +65,8 @@ exports.addKeyword = async function(email, subreddit, keyword) {
 }
 
 exports.deleteSubreddit = async function(email, subreddit) {
+  email = email.toLowerCase()
+  subreddit = subreddit.toLowerCase()
   const params = {
     TableName,
     Key: {
@@ -70,6 +79,9 @@ exports.deleteSubreddit = async function(email, subreddit) {
 }
 
 exports.deleteKeyword = async function(email, subreddit, keyword) {
+  email = email.toLowerCase()
+  subreddit = subreddit.toLowerCase()
+  keyword = keyword.toLowerCase()
   const params = {
     TableName,
     Key: {
