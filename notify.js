@@ -20,19 +20,23 @@ transporter.verify(function(error, success) {
   }
 });
 
-sendNotification = async function(subreddit, posts) {
+sendNotification = async function(email, subreddit, posts) {
   const subject = 'New interesting post(s) in subreddit ' + subreddit
   const content = `${posts.map( p => `${p.data.title}\n${p.data.url}` ).join('\n\n')}`
   const mailOptions = {
     from: process.env.MAIL_SENDER,
-    to: process.env.MAIL_RECEIVER,
+    to: email,
     subject,
     text: content
   };
 
   await bot.telegram.sendMessage(process.env.MY_CHAT_ID, `${subject}:\n\n${content}`)
+  if (process.env.NODE_ENV != "dev") {
+    return await transporter.sendMail(mailOptions)
+  }
   
-  return await transporter.sendMail(mailOptions)
+  
+  return // await transporter.sendMail(mailOptions)
 }
 
 module.exports = { sendNotification }

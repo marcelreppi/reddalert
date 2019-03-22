@@ -4,9 +4,11 @@ const docClient = new AWS.DynamoDB.DocumentClient({
   region: "eu-central-1"
 })
 
+const TableName = `reddalert-subreddits${process.env.NODE_ENV == "dev" ? "-dev" : ""}`
+
 exports.getUserData = async function(email) {
-  params = {
-    TableName: "reddalert-subreddits",
+  const params = {
+    TableName,
     FilterExpression : "email = :userMail",
     ExpressionAttributeValues : { ":userMail" : email }
   }
@@ -14,13 +16,21 @@ exports.getUserData = async function(email) {
   return data.Items
 }
 
-exports.addSubreddit = async function(email, subreddit, keywords = []) {
+exports.getAllSubreddits = async function() {
   const params = {
-    TableName: "reddalert-subreddits",
+    TableName
+  }
+  const data = await docClient.scan(params).promise()
+  return data.Items
+}
+
+exports.addSubreddit = async function(email, subreddit, keywords) {
+  const params = {
+    TableName,
     Item: {
       email,
       subreddit,
-      // keywords: docClient.createSet(keywords)
+      keywords: docClient.createSet(keywords)
     },
     ReturnValues: "ALL_OLD"
   }
@@ -31,7 +41,7 @@ exports.addSubreddit = async function(email, subreddit, keywords = []) {
 
 exports.addKeyword = async function(email, subreddit, keyword) {
   const params = {
-    TableName: "reddalert-subreddits",
+    TableName,
     Key: {
       email,
       subreddit
@@ -49,7 +59,7 @@ exports.addKeyword = async function(email, subreddit, keyword) {
 
 exports.deleteSubreddit = async function(email, subreddit) {
   const params = {
-    TableName: "reddalert-subreddits",
+    TableName,
     Key: {
       email,
       subreddit
@@ -61,7 +71,7 @@ exports.deleteSubreddit = async function(email, subreddit) {
 
 exports.deleteKeyword = async function(email, subreddit, keyword) {
   const params = {
-    TableName: "reddalert-subreddits",
+    TableName,
     Key: {
       email,
       subreddit

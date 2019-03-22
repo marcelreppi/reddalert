@@ -1,5 +1,6 @@
 const axios = require('axios')
 
+const { getAllSubreddits } = require("./db")
 const { sendNotification } = require("./notify")
 
 const bot = require("./bot.js")
@@ -21,10 +22,19 @@ async function fetchJSONFeed(subreddit) {
 }
 
 checkReddit = async function() {
-  let newPosts = false
-  for (const sr of subreddits) {
-    const feed = await fetchJSONFeed(sr.name)
-    const keywordsRegex = new RegExp(sr.keywords.join('|'), 'gi')
+  const entries = await getAllSubreddits()
+  
+  const cachedUpdates = {}
+  for (const entry of entries) {
+    let feed
+    if (cachedUpdates[entry.subreddit]) {
+      feed = cachedUpdates[entry.subreddit]
+    } else {
+      feed = await fetchJSONFeed(entry.subreddit)
+      cachedUpdates[entry.subreddit] = feed
+    }
+
+    const keywordsRegex = new RegExp(entry.keywords.values.join('|'), 'gi')
     const matchingPosts = []
     for (const post of feed) { 
       if (post.data.title.match(keywordsRegex)) {
@@ -33,15 +43,12 @@ checkReddit = async function() {
     }
 
     if (matchingPosts.length > 0) {
-      newPosts = true
-      const result = await sendNotification(sr.name, matchingPosts)
+      const result = await sendNotification(entry.email, entry.subreddit, matchingPosts)
       console.log(result)
     }
   }
 
-  if (!newPosts) {
-    await bot.telegram.sendMessage(process.env.MY_CHAT_ID, `No new messages in any of the subreddits`)
-  }
+  await bot.telegram.sendMessage(process.env.MY_CHAT_ID, `Successfully executed checkReddit on reddalert server`)
 }
 
 module.exports = { checkReddit }
