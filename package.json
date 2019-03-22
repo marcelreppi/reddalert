@@ -4,7 +4,8 @@
   "description": "A service that sends email notifications for reddit posts based on keywords for specified subreddits",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon start.js"
+    "start": "nodemon start.js",
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,13 @@
   },
   "homepage": "https://github.com/marcelreppi/reddalert#readme",
   "dependencies": {
+    "aws-sdk": "^2.426.0",
+    "axios": "^0.18.0",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "node-cron": "^2.0.3",
     "nodemailer": "^5.1.1",
-    "rss-parser": "^3.7.0"
+    "telegraf": "^3.27.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
