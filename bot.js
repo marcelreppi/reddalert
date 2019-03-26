@@ -1,8 +1,10 @@
-const Telegraf = require('telegraf')
+const Telegraf = require("telegraf")
+
+const { checkReddit } = require("./crawler")
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
-bot.command("test-reddalert", async (ctx) => {
+bot.command("test-reddalert", async ctx => {
   try {
     await checkReddit()
     ctx.reply("Everything good!〈( ^.^)ノ")

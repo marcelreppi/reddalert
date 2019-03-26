@@ -1,6 +1,6 @@
-const { getUserData }= require("../db")
+const { getUserSubreddits } = require("../database/subredditDAO")
 
-exports.getUserData = async (req, res, next) => {
-  const userData = await getUserData(req.params.email)
+exports.getUserSubreddits = async (req, res, next) => {
+  const userData = await getUserSubreddits(req.params.email)
   res.json(userData)
 }
