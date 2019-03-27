@@ -149,4 +149,4 @@ test("Getting all user subreddits", async () => {
   })
 })
 
-afterAll(async () => await deleteAllItems())
+// afterAll(async () => await deleteAllItems())

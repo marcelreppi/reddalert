@@ -29,3 +29,9 @@ exports.deleteKeyword = async (req, res, next) => {
   const result = await subredditDAO.deleteKeyword(email, subreddit, keyword)
   res.json(result)
 }
+
+exports.getAllData = async (req, res, next) => {
+  console.log("getAll")
+  const result = await subredditDAO.getAllSubreddits()
+  res.json(result)
+}

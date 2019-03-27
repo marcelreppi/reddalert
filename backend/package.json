@@ -21,6 +21,7 @@
   "dependencies": {
     "aws-sdk": "^2.426.0",
     "axios": "^0.18.0",
+    "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "node-cron": "^2.0.3",
