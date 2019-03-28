@@ -1,0 +1,20 @@
+.subreddits-grid {
+  display: grid;
+  grid-template-columns: 25% auto 50px;
+  justify-items: start;
+  margin: 20px 0px;
+  row-gap: 5px;
+}
+
+.subreddit-name {
+  grid-column-start: 1;
+}
+
+.subreddit-keyword {
+  grid-column-start: 2;
+}
+
+.grid-title {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
