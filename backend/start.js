@@ -14,8 +14,8 @@ cron.schedule("0 * * * *", async () => {
 })
 
 // Start server
-const PORT = 3000
+const PORT = 3001
 app.listen(PORT, async () => {
   console.log("Server listening at http://localhost:" + PORT)
-  // await checkReddit()
+  await checkReddit()
 })

@@ -32,7 +32,7 @@ async function sendNotification(email, subreddit, posts) {
     text: content,
   }
 
-  if (process.env.NODE_ENV == "dev") {
+  if (process.env.NODE_ENV !== "production") {
     return await bot.telegram.sendMessage(
       process.env.MY_CHAT_ID,
       `${subject}:\n\n${content}`
