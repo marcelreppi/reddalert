@@ -4,6 +4,14 @@ const TableName = `reddalert-subreddits${
   process.env.NODE_ENV == "production" ? "" : "-dev"
 }`
 
+const valueMapper = item => {
+  return {
+    email: item.email,
+    subreddit: item.subreddit,
+    keywords: item.keywords.values,
+  }
+}
+
 exports.getUserSubreddits = async function(email) {
   email = email.toLowerCase()
   const params = {
@@ -12,7 +20,7 @@ exports.getUserSubreddits = async function(email) {
     ExpressionAttributeValues: { ":userMail": email },
   }
   const data = await docClient.scan(params).promise()
-  return data.Items
+  return data.Items.map(valueMapper)
 }
 
 exports.getAllSubreddits = async function() {
@@ -20,7 +28,7 @@ exports.getAllSubreddits = async function() {
     TableName,
   }
   const data = await docClient.scan(params).promise()
-  return data.Items
+  return data.Items.map(valueMapper)
 }
 
 exports.addSubreddit = async function(email, subreddit, keywords) {
