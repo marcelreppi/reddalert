@@ -1,24 +1,26 @@
 const axios = require("axios")
 
-const { getAllSubreddits } = require("./database/db")
+const { getAllSubreddits } = require("./database/subredditDAO")
 const { sendNotification } = require("./notify")
 
 const bot = require("./bot.js")
 
-const latestPostIds = {}
+const latestPostCreated = {}
 
 async function fetchJSONFeed(subreddit) {
-  let query = "?limit=100"
-  if (latestPostIds[subreddit]) {
-    query += `&before=${latestPostIds[subreddit]}`
-  }
-
   const response = await axios.get(
-    `https://www.reddit.com/r/${subreddit}/new.json${query}`
+    `https://www.reddit.com/r/${subreddit}/new.json?limit=100`
   )
   const feed = response.data.data.children
 
-  if (feed.length > 0) latestPostIds[subreddit] = feed[0].data.name
+  // Find latest post from that subreddit and remove already seen posts
+  const i = feed.findIndex(x => x.data.created <= latestPostCreated[subreddit])
+  if (i !== -1) {
+    feed.splice(i)
+  }
+  console.log(`Found ${feed.length} new posts in /r/${subreddit}:`)
+
+  if (feed.length > 0) latestPostCreated[subreddit] = feed[0].data.created
   return feed
 }
 
@@ -35,7 +37,16 @@ async function checkReddit() {
       cachedUpdates[entry.subreddit] = feed
     }
 
-    const keywordsRegex = new RegExp(entry.keywords.values.join("|"), "gi")
+    const keywordsRegexString = entry.keywords
+      .map(k => {
+        if (k.includes("AND")) {
+          const words = k.split(" AND ")
+          return `(${words.map(w => `(?=.*${w})`).join("")}).*`
+        }
+        return `(${k})`
+      })
+      .join("|")
+    const keywordsRegex = new RegExp(keywordsRegexString, "gi")
     const matchingPosts = []
     for (const post of feed) {
       if (post.data.title.match(keywordsRegex)) {
