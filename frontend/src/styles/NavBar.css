@@ -1,0 +1,31 @@
+.navbar {
+  /* border: 1px black solid; */
+  background-color: rgb(80, 80, 80);
+  color: white;
+  text-align: center;
+  padding: 15px 20px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-item {
+  margin-right: 40px;
+  padding-bottom: 6px;
+  border-bottom: 2px rgb(80, 80, 80) solid;
+}
+
+.navbar-item:hover {
+  border-bottom: 2px white solid;
+  cursor: pointer;
+}
+
+.name {
+  position: absolute;
+  top: 15px;
+  left: 300px;
+}
+
+.name:hover {
+  cursor: pointer;
+}

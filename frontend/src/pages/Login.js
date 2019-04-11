@@ -8,6 +8,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props)
     this.emailInput = React.createRef()
+    this.passwordInput = React.createRef()
     this.submitEmail = this.submitEmail.bind(this)
     this.handleEnterKey = this.handleEnterKey.bind(this)
 
@@ -61,16 +62,30 @@ class Home extends React.Component {
     return (
       <Layout>
         {this.renderRedirect()}
-        <h1>Reddalert</h1>
-        <p>Welcome to reddalert</p>
-        <div>
+        <div className="page-title">Log in to Reddalert!</div>
+        <div className="login-form">
+          <div className="input-title">E-Mail</div>
           <input
+            className="input-text"
             type="text"
-            placeholder="E-Mail address"
             ref={this.emailInput}
             onKeyPress={this.handleEnterKey}
           />
-          <input type="submit" value="Submit" onClick={this.submitEmail} />
+          <div className="input-title" style={{ marginTop: "20px" }}>
+            Password
+          </div>
+          <input
+            className="input-text"
+            type="password"
+            ref={this.passwordInput}
+            onKeyPress={this.handleEnterKey}
+          />
+          <input
+            className="input-submit"
+            type="submit"
+            value="Login"
+            onClick={this.submitEmail}
+          />
         </div>
       </Layout>
     )
