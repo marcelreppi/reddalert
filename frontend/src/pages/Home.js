@@ -2,8 +2,6 @@ import React, { Component } from "react"
 
 import Layout from "../components/Layout"
 
-import "../styles/Home.css"
-
 class Home extends Component {
   render() {
     return (

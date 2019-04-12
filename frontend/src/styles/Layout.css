@@ -3,31 +3,6 @@
   margin: 40px 200px;
 }
 
-.input-title {
-  text-align: left;
-  margin-bottom: 5px;
-}
-
-.input-text {
-  height: 40px;
-  border: 1px black solid;
-  border-radius: 5px;
-  padding: 0px 10px;
-  font-size: 16px;
-}
-
-.input-submit {
-  margin: 30px auto;
-  height: 50px;
-  width: 200px;
-  border-radius: 5px;
-  border: 0px;
-  background: rgb(202, 0, 0);
-  font-size: 16px;
-  font-weight: bold;
-  color: white; 
-}
-
 .page-title {
   font-size: 30px;
 }

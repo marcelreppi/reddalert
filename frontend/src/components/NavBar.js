@@ -11,19 +11,22 @@ class NavBar extends Component {
   render() {
     return (
       <div className="navbar">
-        <div className="name" onClick={this.redirect("/")}>
-          {/* <span>Logo</span> */}
-          <span>Reddalert</span>
+        <div className="navbar-item-container">
+          <div className="name" onClick={this.redirect("/")}>
+            {/* <span>Logo</span> */}
+            <span>Reddalert</span>
+          </div>
+          <div className="navbar-item" onClick={this.redirect("/")}>
+            Home
+          </div>
+          <div className="navbar-item" onClick={this.redirect("/login")}>
+            Login
+          </div>
+          <div className="navbar-item" onClick={this.redirect("/register")}>
+            Register
+          </div>
         </div>
-        <div className="navbar-item" onClick={this.redirect("/")}>
-          Home
-        </div>
-        <div className="navbar-item" onClick={this.redirect("/login")}>
-          Login
-        </div>
-        <div className="navbar-item" onClick={this.redirect("/register")}>
-          Register
-        </div>
+        <div className="color-line" />
       </div>
     )
   }

@@ -3,6 +3,7 @@ import axios from "axios"
 import { Redirect } from "react-router-dom"
 
 import Layout from "../components/Layout"
+import Alert from "../components/Alert"
 
 class Home extends React.Component {
   constructor(props) {
@@ -11,12 +12,14 @@ class Home extends React.Component {
     this.passwordInput = React.createRef()
     this.submitEmail = this.submitEmail.bind(this)
     this.handleEnterKey = this.handleEnterKey.bind(this)
+    this.hideAlerts = this.hideAlerts.bind(this)
+  }
 
-    this.state = {
-      redirect: false,
-      redirectPath: `/dashboard/lol`,
-      redirectState: {},
-    }
+  state = {
+    redirect: false,
+    redirectPath: `/dashboard/lol`,
+    redirectState: {},
+    emptyFields: false,
   }
 
   async handleEnterKey(e) {
@@ -25,16 +28,31 @@ class Home extends React.Component {
     }
   }
 
+  hideAlerts() {
+    this.setState({ emptyFields: false })
+  }
+
+  showEmptyFieldsAlert() {
+    this.setState({ emptyFields: true })
+  }
+
   async submitEmail() {
     console.log("submit email")
     const backendURL = "http://localhost:3001"
-    const inputEmail = this.emailInput.current.value.toLowerCase()
-    const { data } = await axios.get(backendURL + `/user/${inputEmail}`)
-    if (data.length === 0) {
-      console.log("No data found, sorry!")
-    } else {
-      this.setRedirect(inputEmail, data)
+    const email = this.emailInput.current.value.toLowerCase()
+    const password = this.passwordInput.current.value
+    console.log(email, password)
+
+    if (email === "" || password === "") {
+      this.showEmptyFieldsAlert()
     }
+
+    // const { data } = await axios.get(backendURL + `/login`)
+    // if (data.length === 0) {
+    //   console.log("No data found, sorry!")
+    // } else {
+    //   this.setRedirect(email, data)
+    // }
   }
 
   setRedirect = (email, data) => {
@@ -64,28 +82,36 @@ class Home extends React.Component {
         {this.renderRedirect()}
         <div className="page-title">Log in to Reddalert!</div>
         <div className="login-form">
-          <div className="input-title">E-Mail</div>
-          <input
-            className="input-text"
-            type="text"
-            ref={this.emailInput}
-            onKeyPress={this.handleEnterKey}
-          />
-          <div className="input-title" style={{ marginTop: "20px" }}>
-            Password
+          <div className="input-container">
+            <div className="input-title">E-Mail</div>
+            <input
+              className="input-text"
+              type="text"
+              ref={this.emailInput}
+              onKeyPress={this.handleEnterKey}
+              onInput={this.hideAlerts}
+            />
+            <div className="input-title">Password</div>
+            <input
+              className="input-text"
+              type="password"
+              ref={this.passwordInput}
+              onKeyPress={this.handleEnterKey}
+              onInput={this.hideAlerts}
+            />
+            <Alert
+              styleClass="password-alert"
+              showCondition={this.state.emptyFields}
+              alert="Please fill out all fields!"
+            />
+            <input
+              className="input-submit"
+              type="submit"
+              value="Log in"
+              onClick={this.submitEmail}
+            />
           </div>
-          <input
-            className="input-text"
-            type="password"
-            ref={this.passwordInput}
-            onKeyPress={this.handleEnterKey}
-          />
-          <input
-            className="input-submit"
-            type="submit"
-            value="Login"
-            onClick={this.submitEmail}
-          />
+          <div className="color-line" />
         </div>
       </Layout>
     )

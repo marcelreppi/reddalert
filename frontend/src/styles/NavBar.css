@@ -1,18 +1,22 @@
 .navbar {
   /* border: 1px black solid; */
-  background-color: rgb(80, 80, 80);
-  color: white;
+  background-color: #2b2d42;
+  color: #edf2f4;
   text-align: center;
-  padding: 15px 20px;
   font-size: 20px;
+}
+
+.navbar-item-container {
+  --padding-top: 25px;
   display: flex;
   justify-content: center;
+  padding: var(--padding-top) 0px 15px 0px;
 }
 
 .navbar-item {
-  margin-right: 40px;
+  margin: 0px 80px;
   padding-bottom: 6px;
-  border-bottom: 2px rgb(80, 80, 80) solid;
+  border-bottom: 2px #2b2d42 solid;
 }
 
 .navbar-item:hover {
@@ -22,10 +26,21 @@
 
 .name {
   position: absolute;
-  top: 15px;
+  top: var(--padding-top);
   left: 300px;
 }
 
 .name:hover {
   cursor: pointer;
+}
+
+.color-line {
+  /* background-color: #ef233c; */
+  background: #ef233c; /* Old browsers */
+  background: -moz-linear-gradient(left, #ef233c 0%, #d80032 89%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #ef233c 0%,#d80032 89%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #ef233c 0%,#d80032 89%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ef233c', endColorstr='#d80032',GradientType=1 ); /* IE6-9 */
+  height: 7px;
+  width: 100%;
 }
