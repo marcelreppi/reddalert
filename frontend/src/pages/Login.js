@@ -10,49 +10,46 @@ class Home extends React.Component {
     super(props)
     this.emailInput = React.createRef()
     this.passwordInput = React.createRef()
-    this.submitEmail = this.submitEmail.bind(this)
     this.handleEnterKey = this.handleEnterKey.bind(this)
-    this.hideAlerts = this.hideAlerts.bind(this)
+    this.hideAlert = this.hideAlert.bind(this)
+    this.submitForm = this.submitForm.bind(this)
   }
 
   state = {
     redirect: false,
     redirectPath: `/dashboard/lol`,
     redirectState: {},
-    emptyFields: false,
+    showAlert: false,
+    alertMsg: "",
   }
 
   async handleEnterKey(e) {
     if (e.key === "Enter") {
-      await this.submitEmail()
+      await this.submitForm()
     }
   }
 
-  hideAlerts() {
-    this.setState({ emptyFields: false })
-  }
-
-  showEmptyFieldsAlert() {
-    this.setState({ emptyFields: true })
-  }
-
-  async submitEmail() {
-    console.log("submit email")
+  async submitForm() {
+    console.log("submit login")
     const backendURL = "http://localhost:3001"
     const email = this.emailInput.current.value.toLowerCase()
     const password = this.passwordInput.current.value
-    console.log(email, password)
 
-    if (email === "" || password === "") {
-      this.showEmptyFieldsAlert()
+    const { data } = await axios.post(backendURL + "/login", {
+      email,
+      password,
+    })
+
+    if (data.errors) {
+      this.setState({ alertMsg: data.errors[0].msg, showAlert: true })
+      return
     }
 
-    // const { data } = await axios.get(backendURL + `/login`)
-    // if (data.length === 0) {
-    //   console.log("No data found, sorry!")
-    // } else {
-    //   this.setRedirect(email, data)
-    // }
+    this.hideAlert()
+  }
+
+  hideAlert() {
+    this.setState({ showAlert: false })
   }
 
   setRedirect = (email, data) => {
@@ -89,7 +86,7 @@ class Home extends React.Component {
               type="text"
               ref={this.emailInput}
               onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlerts}
+              onInput={this.hideAlert}
             />
             <div className="input-title">Password</div>
             <input
@@ -97,18 +94,18 @@ class Home extends React.Component {
               type="password"
               ref={this.passwordInput}
               onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlerts}
+              onInput={this.hideAlert}
             />
             <Alert
-              styleClass="password-alert"
-              showCondition={this.state.emptyFields}
-              alert="Please fill out all fields!"
+              styleClass="alert"
+              showCondition={this.state.showAlert}
+              alert={this.state.alertMsg}
             />
             <input
               className="input-submit"
               type="submit"
               value="Log in"
-              onClick={this.submitEmail}
+              onClick={this.submitForm}
             />
           </div>
           <div className="color-line" />

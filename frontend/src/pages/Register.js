@@ -1,4 +1,5 @@
 import React from "react"
+import axios from "axios"
 
 import Layout from "../components/Layout"
 import Alert from "../components/Alert"
@@ -10,14 +11,15 @@ class Register extends React.Component {
     super(props)
     this.emailInput = React.createRef()
     this.passwordInput = React.createRef()
-    this.repeatedPasswordInput = React.createRef()
+    this.confirmedPasswordInput = React.createRef()
     this.handleEnterKey = this.handleEnterKey.bind(this)
-    this.hideAlerts = this.hideAlerts.bind(this)
+    this.hideAlert = this.hideAlert.bind(this)
+    this.submitForm = this.submitForm.bind(this)
   }
 
   state = {
-    passwordsMatch: true,
-    emptyFields: false,
+    showAlert: false,
+    alertMsg: "",
   }
 
   async handleEnterKey(e) {
@@ -31,29 +33,24 @@ class Register extends React.Component {
     const backendURL = "http://localhost:3001"
     const email = this.emailInput.current.value.toLowerCase()
     const password = this.passwordInput.current.value
-    const repeatedPassword = this.repeatedPasswordInput.current.value
+    const confirmedPassword = this.confirmedPasswordInput.current.value
 
-    if (email === "" || password === "" || repeatedPassword === "") {
-      this.showEmptyFieldsAlert()
+    const { data } = await axios.post(backendURL + "/register", {
+      email,
+      password,
+      confirmedPassword,
+    })
+
+    if (data.errors) {
+      this.setState({ alertMsg: data.errors[0].msg, showAlert: true })
+      return
     }
 
-    if (password !== repeatedPassword) {
-      this.showPasswordAlert()
-    }
-
-    console.log(email, password, repeatedPassword)
+    this.hideAlert()
   }
 
-  hideAlerts() {
-    this.setState({ emptyFields: false, passwordsMatch: true })
-  }
-
-  showEmptyFieldsAlert() {
-    this.setState({ emptyFields: true })
-  }
-
-  showPasswordAlert() {
-    this.setState({ passwordsMatch: false })
+  hideAlert() {
+    this.setState({ showAlert: false })
   }
 
   render() {
@@ -68,7 +65,7 @@ class Register extends React.Component {
               type="text"
               ref={this.emailInput}
               onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlerts}
+              onInput={this.hideAlert}
             />
             <div className="input-title">Password</div>
             <input
@@ -76,27 +73,27 @@ class Register extends React.Component {
               type="password"
               ref={this.passwordInput}
               onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlerts}
+              onInput={this.hideAlert}
             />
-            <div className="input-title">Repeat Password</div>
+            <div className="input-title">Confirm Password</div>
             <input
               className="input-text"
               type="password"
-              ref={this.repeatedPasswordInput}
+              ref={this.confirmedPasswordInput}
               onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlerts}
+              onInput={this.hideAlert}
             />
             <Alert
-              styleClass="password-alert"
-              showCondition={!this.state.passwordsMatch}
-              alert="Passwords don't match!"
+              styleClass="alert"
+              showCondition={this.state.showAlert}
+              alert={this.state.alertMsg}
             />
-            <Alert
-              styleClass="password-alert"
-              showCondition={this.state.emptyFields}
-              alert="Please fill out all fields!"
+            <input
+              className="input-submit"
+              type="submit"
+              value="Register"
+              onClick={this.submitForm}
             />
-            <input className="input-submit" type="submit" value="Register" />
           </div>
           <div className="color-line" />
         </div>
