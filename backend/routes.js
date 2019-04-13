@@ -4,6 +4,14 @@ const router = express.Router()
 const userController = require("./controllers/userController.js")
 const subredditController = require("./controllers/subredditController.js")
 
+router.post("/login", userController.validateLogin, userController.login)
+router.post(
+  "/register",
+  userController.validateLogin,
+  userController.validateRegister,
+  userController.register
+)
+
 router.get("/all", subredditController.getAllData)
 
 router.get("/user/:email", userController.getUserSubreddits)
