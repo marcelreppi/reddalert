@@ -1,39 +1,33 @@
-import React from "react"
+import React, { useState, useContext } from "react"
 import axios from "axios"
 
+import { BackendContext } from "../Store"
 import Layout from "../components/Layout"
 import Alert from "../components/Alert"
 
 import "../styles/Login.css"
 
-class Register extends React.Component {
-  constructor(props) {
-    super(props)
-    this.emailInput = React.createRef()
-    this.passwordInput = React.createRef()
-    this.confirmedPasswordInput = React.createRef()
-    this.handleEnterKey = this.handleEnterKey.bind(this)
-    this.hideAlert = this.hideAlert.bind(this)
-    this.submitForm = this.submitForm.bind(this)
-  }
+function Register() {
+  const emailInput = React.createRef()
+  const passwordInput = React.createRef()
+  const confirmedPasswordInput = React.createRef()
 
-  state = {
-    showAlert: false,
-    alertMsg: "",
-  }
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMsg, setAlertMsg] = useState("")
 
-  async handleEnterKey(e) {
+  async function handleEnterKey(e) {
     if (e.key === "Enter") {
-      await this.submitForm()
+      await submitForm()
     }
   }
 
-  async submitForm() {
-    console.log("submit registration")
-    const backendURL = "http://localhost:3001"
-    const email = this.emailInput.current.value
-    const password = this.passwordInput.current.value
-    const confirmedPassword = this.confirmedPasswordInput.current.value
+  async function submitForm() {
+    console.log("Submit Registration")
+
+    const { url: backendURL } = useContext(BackendContext)
+    const email = emailInput.current.value
+    const password = passwordInput.current.value
+    const confirmedPassword = confirmedPasswordInput.current.value
 
     const { data } = await axios.post(backendURL + "/register", {
       email,
@@ -42,74 +36,71 @@ class Register extends React.Component {
     })
 
     if (data.error) {
-      this.setState({ alertMsg: data.error.msg, showAlert: true })
-      setTimeout(this.hideAlert, 3000)
+      setAlertMsg(data.error.msg)
+      setShowAlert(true)
+      setTimeout(hideAlert, 3000)
       return
     }
 
-    this.hideAlert()
+    hideAlert()
 
-    this.emailInput.current.value = ""
-    this.passwordInput.current.value = ""
-    this.confirmedPasswordInput.current.value = ""
+    emailInput.current.value = ""
+    passwordInput.current.value = ""
+    confirmedPasswordInput.current.value = ""
 
-    this.setState({
-      alertMsg: "Registration was successful! You can now login!",
-      showAlert: true,
-    })
+    setAlertMsg("Registration was successful! You can now log in!")
+    setShowAlert(true)
   }
 
-  hideAlert() {
-    this.setState({ showAlert: false })
+  function hideAlert() {
+    setShowAlert(false)
   }
 
-  render() {
-    return (
-      <Layout>
-        <div className="page-title">Get started with Reddalert!</div>
-        <div className="login-form">
-          <div className="input-container">
-            <div className="input-title">E-Mail</div>
-            <input
-              className="input-text"
-              type="text"
-              ref={this.emailInput}
-              onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlert}
-            />
-            <div className="input-title">Password</div>
-            <input
-              className="input-text"
-              type="password"
-              ref={this.passwordInput}
-              onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlert}
-            />
-            <div className="input-title">Confirm Password</div>
-            <input
-              className="input-text"
-              type="password"
-              ref={this.confirmedPasswordInput}
-              onKeyPress={this.handleEnterKey}
-              onInput={this.hideAlert}
-            />
-            <Alert
-              styleClass="alert"
-              showCondition={this.state.showAlert}
-              alert={this.state.alertMsg}
-            />
-            <input
-              className="input-submit"
-              type="submit"
-              value="Register"
-              onClick={this.submitForm}
-            />
-          </div>
-          <div className="color-line" />
+  return (
+    <Layout>
+      <div className="page-title">Get started with Reddalert!</div>
+      <div className="login-form">
+        <div className="input-container">
+          <div className="input-title">E-Mail</div>
+          <input
+            className="input-text"
+            type="text"
+            ref={emailInput}
+            onKeyPress={handleEnterKey}
+            onInput={hideAlert}
+          />
+          <div className="input-title">Password</div>
+          <input
+            className="input-text"
+            type="password"
+            ref={passwordInput}
+            onKeyPress={handleEnterKey}
+            onInput={hideAlert}
+          />
+          <div className="input-title">Confirm Password</div>
+          <input
+            className="input-text"
+            type="password"
+            ref={confirmedPasswordInput}
+            onKeyPress={handleEnterKey}
+            onInput={hideAlert}
+          />
+          <Alert
+            styleClass="alert"
+            showCondition={showAlert}
+            alert={alertMsg}
+          />
+          <input
+            className="input-submit"
+            type="submit"
+            value="Register"
+            onClick={submitForm}
+          />
         </div>
-      </Layout>
-    )
-  }
+        <div className="color-line" />
+      </div>
+    </Layout>
+  )
 }
 
 export default Register

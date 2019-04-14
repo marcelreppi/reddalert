@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 
+import { AuthUserContext } from "../Store"
 import Layout from "../components/Layout"
 import SubredditsGrid from "../components/SubredditsGrid"
 import SubredditsCards from "../components/SubredditsCards"
@@ -9,15 +10,15 @@ import SubredditsCards from "../components/SubredditsCards"
 import "../styles/Dashboard.css"
 
 function Dashboard(props) {
-  console.log(props)
-  useEffect(() => {})
+  const { authUser } = useContext(AuthUserContext)
+
   return (
     <Layout>
       <h1>Dashboard</h1>
 
       <div className="dashboard-email">
         Notifications for
-        <h3>{props.match.params.mail}</h3>
+        <h3>{authUser}</h3>
       </div>
       <div className="dashboard-subreddits">
         {/* <span>Registered subreddits</span> */}
