@@ -24,6 +24,11 @@
   cursor: pointer;
 }
 
+.active {
+  border-bottom: 2px white solid;
+  /* cursor: pointer; */
+}
+
 .name {
   position: absolute;
   top: var(--padding-top);
