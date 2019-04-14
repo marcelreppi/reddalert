@@ -1,5 +1,7 @@
 const { body, validationResult } = require("express-validator/check")
 const { sanitize } = require("express-validator/filter")
+const passport = require("passport")
+const bcrypt = require("bcrypt")
 
 const { getUserSubreddits } = require("../database/subredditDAO")
 const userDAO = require("../database/userDAO")
@@ -14,6 +16,7 @@ exports.validateLogin = [
     .isEmail()
     .trim()
     .withMessage("Your E-Mail is not valid!"),
+
   sanitize("email"),
 
   body("password")
@@ -22,13 +25,22 @@ exports.validateLogin = [
     .withMessage("Password cannot be empty!"),
 ]
 
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
+  console.log("Login")
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.json({ errors: errors.array() })
+    return res.json({ error: errors.array()[0] })
   }
 
-  res.json({})
+  passport.authenticate("local", (err, user, info) => {
+    console.log("Authenticate")
+
+    if (!user) {
+      return res.json(info)
+    }
+
+    res.json({ user })
+  })(req, res)
 }
 
 exports.validateRegister = [
@@ -48,13 +60,27 @@ exports.validateRegister = [
 ]
 
 exports.register = async (req, res) => {
+  console.log("Register")
+
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.json({ errors: errors.array() })
+    return res.json({ error: errors.array()[0] })
   }
 
-  // Register user
-  console.log("Register")
+  // 1. Check if user with that email already exists
+  const user = await userDAO.getUser(req.body.email)
+  if (user) {
+    return res.json({
+      error: { msg: "A user with that E-Mail already exists!" },
+    })
+  }
+
+  // 2. Hash password
+  const saltRounds = 10
+  const hash = await bcrypt.hash(req.body.password, saltRounds)
+
+  // 3. Save new user
+  userDAO.saveUser(req.body.email, hash)
 
   res.json({})
 }
