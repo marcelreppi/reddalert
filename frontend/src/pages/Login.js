@@ -40,12 +40,15 @@ class Home extends React.Component {
       password,
     })
 
-    if (data.errors) {
-      this.setState({ alertMsg: data.errors[0].msg, showAlert: true })
+    if (data.error) {
+      this.setState({ alertMsg: data.error.msg, showAlert: true })
+      setTimeout(this.hideAlert, 3000)
       return
     }
 
     this.hideAlert()
+
+    this.setRedirect(data.user.email)
   }
 
   hideAlert() {

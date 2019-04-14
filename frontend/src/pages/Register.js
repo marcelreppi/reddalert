@@ -31,7 +31,7 @@ class Register extends React.Component {
   async submitForm() {
     console.log("submit registration")
     const backendURL = "http://localhost:3001"
-    const email = this.emailInput.current.value.toLowerCase()
+    const email = this.emailInput.current.value
     const password = this.passwordInput.current.value
     const confirmedPassword = this.confirmedPasswordInput.current.value
 
@@ -41,12 +41,22 @@ class Register extends React.Component {
       confirmedPassword,
     })
 
-    if (data.errors) {
-      this.setState({ alertMsg: data.errors[0].msg, showAlert: true })
+    if (data.error) {
+      this.setState({ alertMsg: data.error.msg, showAlert: true })
+      setTimeout(this.hideAlert, 3000)
       return
     }
 
     this.hideAlert()
+
+    this.emailInput.current.value = ""
+    this.passwordInput.current.value = ""
+    this.confirmedPasswordInput.current.value = ""
+
+    this.setState({
+      alertMsg: "Registration was successful! You can now login!",
+      showAlert: true,
+    })
   }
 
   hideAlert() {
