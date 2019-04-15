@@ -6,7 +6,9 @@ import { AuthUserContext } from "../Store"
 import "../styles/NavBar.css"
 
 function NavBar(props) {
-  const { authUser, setAuthUser } = useContext(AuthUserContext)
+  const { authUser, setAuthUser, isUserAuthenticated } = useContext(
+    AuthUserContext
+  )
 
   function redirect(path) {
     return () => {
@@ -76,7 +78,7 @@ function NavBar(props) {
         >
           Home
         </div>
-        {authUser !== null ? loggedInNavBar() : loggedOutNavBar()}
+        {isUserAuthenticated() ? loggedInNavBar() : loggedOutNavBar()}
       </div>
       <div className="color-line" />
     </div>

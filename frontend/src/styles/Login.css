@@ -55,5 +55,9 @@
   width: 70%;
 }
 
+.checkbox-label:hover {
+  cursor: pointer;
+}
+
 
 

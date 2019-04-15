@@ -10,6 +10,7 @@ import "../styles/Login.css"
 function Login(props) {
   const emailInput = React.createRef()
   const passwordInput = React.createRef()
+  const rememberCheckBox = React.createRef()
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
@@ -44,7 +45,7 @@ function Login(props) {
     hideAlert()
 
     // Set authorized user
-    setAuthUser(data.user.email)
+    setAuthUser(data.user.email, rememberCheckBox.current.checked)
 
     // Redirect to dashboard
     props.history.push(`/dashboard/${data.user.email}`)
@@ -52,6 +53,10 @@ function Login(props) {
 
   function hideAlert() {
     setShowAlert(false)
+  }
+
+  function toggleCheckBox() {
+    rememberCheckBox.current.checked = !rememberCheckBox.current.checked
   }
 
   return (
@@ -75,6 +80,17 @@ function Login(props) {
             onKeyPress={handleEnterKey}
             onInput={hideAlert}
           />
+          <div className="input-title">
+            <input
+              type="checkbox"
+              style={{ marginRight: "10px" }}
+              ref={rememberCheckBox}
+            />
+            <span onClick={toggleCheckBox} className="checkbox-label">
+              Stay logged in?
+            </span>
+          </div>
+
           <Alert
             styleClass="alert"
             showCondition={showAlert}
