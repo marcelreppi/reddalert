@@ -1,7 +1,6 @@
 // Set environment variables
 require("dotenv").config({ path: "variables.env" })
 const cron = require("node-cron")
-// require("./database/db")
 
 const app = require("./app.js")
 const { checkReddit } = require("./crawler.js")

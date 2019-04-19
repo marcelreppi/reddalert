@@ -59,7 +59,7 @@ exports.addKeyword = async function(email, subreddit, keyword) {
       email,
       subreddit,
     },
-    UpdateExpression: "SET keywords :newKeyword",
+    UpdateExpression: "SET keywords = :newKeyword",
     ExpressionAttributeValues: {
       ":newKeyword": docClient.createSet([keyword]),
     },
