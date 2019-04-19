@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 
-import { AuthUserContext } from "../Store"
+import { AuthUserContext } from "../contexts/AuthUserProvider"
 import Layout from "../components/Layout"
 import SubredditsGrid from "../components/SubredditsGrid"
 import SubredditsCards from "../components/SubredditsCards"

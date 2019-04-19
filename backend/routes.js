@@ -11,6 +11,8 @@ router.post(
   userController.validateRegister,
   userController.register
 )
+router.post("/logout", userController.logout)
+router.get("/session/:sessionId", userController.getUserSessionData)
 
 router.get("/all", subredditController.getAllData)
 

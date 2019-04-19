@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react"
 import axios from "axios"
+import { useCookies } from "react-cookie"
 
-import { AuthUserContext, BackendContext } from "../Store"
+import { AppContext } from "../contexts/AppProvider"
+import { AuthUserContext } from "../contexts/AuthUserProvider"
 import Layout from "../components/Layout"
 import Alert from "../components/Alert"
 
@@ -15,8 +17,9 @@ function Login(props) {
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
 
-  const { setAuthUser } = useContext(AuthUserContext)
-  const { url: backendURL } = useContext(BackendContext)
+  const [cookies, setCookie] = useCookies()
+  const { setAuthUser, setRememberUser } = useContext(AuthUserContext)
+  const { backendURL } = useContext(AppContext)
 
   async function handleEnterKey(e) {
     if (e.key === "Enter") {
@@ -43,9 +46,14 @@ function Login(props) {
     }
 
     hideAlert()
+    setRememberUser(rememberCheckBox.current.checked)
 
     // Set authorized user
-    setAuthUser(data.user.email, rememberCheckBox.current.checked)
+    setAuthUser(data.user.email)
+    setCookie("session", {
+      sessionId: data.sessionId,
+      authUser: data.user.email,
+    })
 
     // Redirect to dashboard
     props.history.push(`/dashboard/${data.user.email}`)

@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator/check")
 const { sanitize } = require("express-validator/filter")
 const passport = require("passport")
 const bcrypt = require("bcrypt")
+const uuidv4 = require("uuid/v4")
 
 const { getUserSubreddits } = require("../database/subredditDAO")
 const userDAO = require("../database/userDAO")
@@ -10,6 +11,13 @@ exports.getUserSubreddits = async (req, res, next) => {
   const userData = await getUserSubreddits(req.params.email)
   res.json(userData)
 }
+
+exports.getUserSessionData = async (req, res) => {
+  const userData = await userDAO.getUserBySessionId(req.params.sessionId)
+  res.json({ email: userData.email })
+}
+
+////////////////////////////////// LOGIN /////////////////////////////////////
 
 exports.validateLogin = [
   body("email")
@@ -32,16 +40,26 @@ exports.login = async (req, res) => {
     return res.json({ error: errors.array()[0] })
   }
 
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", async (err, user, info) => {
     console.log("Authenticate")
 
     if (!user) {
       return res.json(info)
     }
 
-    res.json({ user })
+    const sessionId = uuidv4()
+    await userDAO.saveSession(user.email, sessionId)
+    res.json({ user, sessionId })
   })(req, res)
 }
+
+exports.logout = async (req, res) => {
+  console.log("Logout")
+  await userDAO.deleteSession(req.body.sessionId)
+  res.json({})
+}
+
+///////////////////////////////////// REGISTER //////////////////////////////////////
 
 exports.validateRegister = [
   body("password")
@@ -68,7 +86,7 @@ exports.register = async (req, res) => {
   }
 
   // 1. Check if user with that email already exists
-  const user = await userDAO.getUser(req.body.email)
+  const user = await userDAO.getUserByEmail(req.body.email)
   if (user) {
     return res.json({
       error: { msg: "A user with that E-Mail already exists!" },

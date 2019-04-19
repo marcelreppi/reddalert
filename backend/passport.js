@@ -9,20 +9,21 @@ passport.use(
     {
       usernameField: "email",
       passwordField: "password",
-      session: false,
     },
     async function(email, password, cb) {
-      const user = await userDAO.getUser(email)
-      if (!user)
+      const user = await userDAO.getUserByEmail(email)
+      if (!user) {
         return cb(null, false, {
           error: { msg: "Invalid E-Mail or Password!" },
         })
+      }
 
       const match = await bcrypt.compare(password, user.password)
-      if (!match)
+      if (!match) {
         return cb(null, false, {
           error: { msg: "Invalid E-Mail or Password!" },
         })
+      }
 
       return cb(null, user)
     }
@@ -34,7 +35,7 @@ passport.serializeUser(function(user, cb) {
 })
 
 passport.deserializeUser(async function(email, cb) {
-  const user = await userDAO.getUser(email)
+  const user = await userDAO.getUserByEmail(email)
   if (!user) return cb(null, false)
   cb(null, user)
 })

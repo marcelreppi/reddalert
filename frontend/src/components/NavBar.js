@@ -1,7 +1,10 @@
 import React, { useContext } from "react"
 import { withRouter } from "react-router-dom"
+import { useCookies } from "react-cookie"
+import axios from "axios"
 
-import { AuthUserContext } from "../Store"
+import { AppContext } from "../contexts/AppProvider"
+import { AuthUserContext } from "../contexts/AuthUserProvider"
 
 import "../styles/NavBar.css"
 
@@ -9,6 +12,8 @@ function NavBar(props) {
   const { authUser, setAuthUser, isUserAuthenticated } = useContext(
     AuthUserContext
   )
+  const { backendURL, loading } = useContext(AppContext)
+  const [cookies, setCookie, removeCookie] = useCookies()
 
   function redirect(path) {
     return () => {
@@ -24,7 +29,10 @@ function NavBar(props) {
     else if (path.startsWith("/dashboard")) return page === "dashboard"
   }
 
-  function logout() {
+  async function logout() {
+    const { sessionId } = cookies.session
+    await axios.post(backendURL + "/logout", { sessionId })
+    removeCookie("session")
     setAuthUser(null)
     props.history.push("/")
   }

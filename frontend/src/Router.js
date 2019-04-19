@@ -9,24 +9,22 @@ import Unauthenticated from "./pages/Unauthenticated"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Contact from "./pages/Contact"
 import NotFound from "./pages/NotFound"
-import { AuthUserContext } from "./Store"
+
+import { AuthUserContext } from "./contexts/AuthUserProvider"
 
 function Router() {
   const { authUser, isUserAuthenticated } = useContext(AuthUserContext)
 
   function PrivateRoute({ component: Component, ...rest }) {
-    function routeIsAllowed(props) {
-      return isUserAuthenticated() && props.match.params.mail === authUser
+    function render(props) {
+      if (isUserAuthenticated() && props.match.params.mail === authUser) {
+        return <Component {...props} />
+      } else {
+        return <Unauthenticated />
+      }
     }
 
-    return (
-      <Route
-        {...rest}
-        render={props =>
-          routeIsAllowed(props) ? <Component {...props} /> : <Unauthenticated />
-        }
-      />
-    )
+    return <Route {...rest} render={render} />
   }
 
   return (

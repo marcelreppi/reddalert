@@ -1,7 +1,7 @@
-const cron = require("node-cron")
-
 // Set environment variables
 require("dotenv").config({ path: "variables.env" })
+const cron = require("node-cron")
+// require("./database/db")
 
 const app = require("./app.js")
 const { checkReddit } = require("./crawler.js")
@@ -17,5 +17,5 @@ cron.schedule("0 * * * *", async () => {
 const PORT = 3001
 app.listen(PORT, async () => {
   console.log("Server listening at http://localhost:" + PORT)
-  await checkReddit()
+  // await checkReddit()
 })

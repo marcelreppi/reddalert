@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react"
 import axios from "axios"
 
-import { BackendContext } from "../Store"
+import { AppContext } from "../contexts/AppProvider"
 import Layout from "../components/Layout"
 import Alert from "../components/Alert"
 
@@ -24,7 +24,7 @@ function Register() {
   async function submitForm() {
     console.log("Submit Registration")
 
-    const { url: backendURL } = useContext(BackendContext)
+    const { backendURL } = useContext(AppContext)
     const email = emailInput.current.value
     const password = passwordInput.current.value
     const confirmedPassword = confirmedPasswordInput.current.value
