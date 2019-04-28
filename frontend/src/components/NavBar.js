@@ -2,11 +2,11 @@ import React, { useContext } from "react"
 import { withRouter } from "react-router-dom"
 import { useCookies } from "react-cookie"
 import axios from "axios"
+import styled from "styled-components"
 
 import { AppContext } from "../contexts/AppProvider"
 import { AuthUserContext } from "../contexts/AuthUserProvider"
-
-import "../styles/NavBar.css"
+import ColorLine from "./ColorLine"
 
 function NavBar(props) {
   const { authUser, setAuthUser, isUserAuthenticated } = useContext(
@@ -40,15 +40,16 @@ function NavBar(props) {
   function loggedInNavBar() {
     return (
       <React.Fragment>
-        <div
-          className={`navbar-item ${isActive("dashboard") ? "active" : ""}`}
+        <Item active={isActive("home")} onClick={redirect("/")}>
+          Home
+        </Item>
+        <Item
+          active={isActive("dashboard")}
           onClick={redirect("/dashboard/" + authUser)}
         >
           Dashboard
-        </div>
-        <div className={`navbar-item`} onClick={logout}>
-          Log out
-        </div>
+        </Item>
+        <Item onClick={logout}>Log out</Item>
         {/* <div>Logged in as {authUser}</div> */}
       </React.Fragment>
     )
@@ -57,40 +58,66 @@ function NavBar(props) {
   function loggedOutNavBar() {
     return (
       <React.Fragment>
-        <div
-          className={`navbar-item ${isActive("login") ? "active" : ""}`}
-          onClick={redirect("/login")}
-        >
+        <Item active={isActive("home")} onClick={redirect("/")}>
+          Home
+        </Item>
+        <Item active={isActive("login")} onClick={redirect("/login")}>
           Log in
-        </div>
-        <div
-          className={`navbar-item ${isActive("register") ? "active" : ""}`}
-          onClick={redirect("/register")}
-        >
+        </Item>
+        <Item active={isActive("register")} onClick={redirect("/register")}>
           Register
-        </div>
+        </Item>
       </React.Fragment>
     )
   }
 
   return (
-    <div className="navbar">
-      <div className="navbar-item-container">
-        <div className="name" onClick={redirect("/")}>
+    <NavBarContainer>
+      <ItemContainer>
+        <SiteName onClick={redirect("/")}>
           {/* <span>Logo</span> */}
           <span>Reddalert</span>
-        </div>
-        <div
-          className={`navbar-item ${isActive("home") ? "active" : ""}`}
-          onClick={redirect("/")}
-        >
-          Home
-        </div>
+        </SiteName>
         {isUserAuthenticated() ? loggedInNavBar() : loggedOutNavBar()}
-      </div>
-      <div className="color-line" />
-    </div>
+      </ItemContainer>
+      <ColorLine />
+    </NavBarContainer>
   )
 }
 
 export default withRouter(NavBar)
+
+////////////////////////////// Styled Components /////////////////////////////
+
+const NavBarContainer = styled.div`
+  background-color: #2b2d42;
+  color: #edf2f4;
+  text-align: center;
+  font-size: 20px;
+`
+const ItemContainer = styled.div`
+  --padding-top: 25px;
+  display: flex;
+  justify-content: center;
+  padding: var(--padding-top) 0px 15px 0px;
+`
+
+const Item = styled.div`
+  margin: 0px 80px;
+  padding-bottom: 6px;
+  border-bottom: ${props =>
+    props.active ? "2px white solid" : "2px #2b2d42 solid"};
+  &:hover {
+    border-bottom: 2px white solid;
+    cursor: pointer;
+  }
+`
+
+const SiteName = styled.div`
+  position: absolute;
+  top: var(--padding-top);
+  left: 300px;
+  &:hover {
+    cursor: pointer;
+  }
+`

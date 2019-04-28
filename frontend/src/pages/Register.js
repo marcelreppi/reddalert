@@ -3,9 +3,13 @@ import axios from "axios"
 
 import { AppContext } from "../contexts/AppProvider"
 import Layout from "../components/Layout"
+import Form, {
+  Label,
+  TextInput,
+  PasswordInput,
+  SubmitButton,
+} from "../components/Form"
 import Alert from "../components/Alert"
-
-import "../styles/Login.css"
 
 function Register() {
   const emailInput = React.createRef()
@@ -14,17 +18,11 @@ function Register() {
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
+  const { backendURL } = useContext(AppContext)
 
-  async function handleEnterKey(e) {
-    if (e.key === "Enter") {
-      await submitForm()
-    }
-  }
-
-  async function submitForm() {
+  async function submitForm(e) {
     console.log("Submit Registration")
-
-    const { backendURL } = useContext(AppContext)
+    e.preventDefault()
     const email = emailInput.current.value
     const password = passwordInput.current.value
     const confirmedPassword = confirmedPasswordInput.current.value
@@ -59,46 +57,16 @@ function Register() {
   return (
     <Layout>
       <div className="page-title">Get started with Reddalert!</div>
-      <div className="login-form">
-        <div className="input-container">
-          <div className="input-title">E-Mail</div>
-          <input
-            className="input-text"
-            type="text"
-            ref={emailInput}
-            onKeyPress={handleEnterKey}
-            onInput={hideAlert}
-          />
-          <div className="input-title">Password</div>
-          <input
-            className="input-text"
-            type="password"
-            ref={passwordInput}
-            onKeyPress={handleEnterKey}
-            onInput={hideAlert}
-          />
-          <div className="input-title">Confirm Password</div>
-          <input
-            className="input-text"
-            type="password"
-            ref={confirmedPasswordInput}
-            onKeyPress={handleEnterKey}
-            onInput={hideAlert}
-          />
-          <Alert
-            styleClass="alert"
-            showCondition={showAlert}
-            alert={alertMsg}
-          />
-          <input
-            className="input-submit"
-            type="submit"
-            value="Register"
-            onClick={submitForm}
-          />
-        </div>
-        <div className="color-line" />
-      </div>
+      <Form onSubmit={submitForm}>
+        <Label>E-Mail</Label>
+        <TextInput ref={emailInput} onInput={hideAlert} />
+        <Label>Password</Label>
+        <PasswordInput ref={passwordInput} onInput={hideAlert} />
+        <Label>Confirm Password</Label>
+        <PasswordInput ref={confirmedPasswordInput} onInput={hideAlert} />
+        <Alert showCondition={showAlert}>{alertMsg}</Alert>
+        <SubmitButton value="Register" />
+      </Form>
     </Layout>
   )
 }

@@ -1,7 +1,13 @@
 import React from "react"
 import styled, { css } from "styled-components"
 
-import "../styles/Alert.css"
+export default props => {
+  return (
+    <AlertContainer {...props}>
+      <Alert>{props.children}</Alert>
+    </AlertContainer>
+  )
+}
 
 const showStyle = css`
   max-height: 500px;
@@ -28,11 +34,3 @@ const Alert = styled.div`
   border: 3px #df0336 solid;
   width: 70%;
 `
-
-export default props => {
-  return (
-    <AlertContainer {...props}>
-      <Alert>{props.children}</Alert>
-    </AlertContainer>
-  )
-}

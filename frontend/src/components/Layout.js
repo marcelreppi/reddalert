@@ -1,25 +1,32 @@
 import React from "react"
-import { Link } from "react-router-dom"
+
+import styled from "styled-components"
 
 import NavBar from "./NavBar"
-
-import "../styles/Layout.css"
+import Footer from "./Footer"
 
 function Layout(props) {
   return (
-    <div className="layout">
+    <LayoutContainer>
       <NavBar />
-      <div className="content-container">{props.children}</div>
-      <div className="footer">
-        <Link to="/contact">Contact</Link>
-        <Link to="/privacy">Privacy Policy</Link>
-        <div>
-          Got any question? Send an email to{" "}
-          <a href="mailto:support@reddalert.me">support@reddalert.me</a>
-        </div>
-      </div>
-    </div>
+      <ContentContainer>{props.children}</ContentContainer>
+      <Footer />
+    </LayoutContainer>
   )
 }
 
 export default Layout
+
+////////////////////// Styled Components ///////////////
+
+const LayoutContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+`
+
+const ContentContainer = styled.div`
+  text-align: center;
+  margin: 40px 500px;
+  flex: 1 0 auto;
+`
