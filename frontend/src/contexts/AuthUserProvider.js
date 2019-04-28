@@ -12,7 +12,7 @@ function AuthUserProvider({ children }) {
 
   const { backendURL, setLoading } = useContext(AppContext)
 
-  const [cookies, setCookie, removeCookie] = useCookies()
+  const [cookies] = useCookies()
 
   function isUserAuthenticated() {
     return cookies.session !== undefined

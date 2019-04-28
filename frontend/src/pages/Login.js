@@ -1,7 +1,6 @@
 import React, { useState, useContext, useRef } from "react"
 import axios from "axios"
 import { useCookies } from "react-cookie"
-import styled from "styled-components"
 
 import { AppContext } from "../contexts/AppProvider"
 import { AuthUserContext } from "../contexts/AuthUserProvider"
@@ -16,7 +15,6 @@ import Form, {
   SubmitButton,
 } from "../components/Form"
 import Alert from "../components/Alert"
-import ColorLine from "../components/ColorLine"
 
 function Login(props) {
   const emailInput = useRef(null)
@@ -26,7 +24,7 @@ function Login(props) {
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
 
-  const [cookies, setCookie] = useCookies()
+  const [, setCookie] = useCookies()
   const { setAuthUser, setRememberUser } = useContext(AuthUserContext)
   const { backendURL } = useContext(AppContext)
 

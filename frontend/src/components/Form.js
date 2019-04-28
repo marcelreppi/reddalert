@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react"
+import React from "react"
 import styled from "styled-components"
 
 import ColorLine from "../components/ColorLine"

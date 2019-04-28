@@ -12,8 +12,8 @@ function NavBar(props) {
   const { authUser, setAuthUser, isUserAuthenticated } = useContext(
     AuthUserContext
   )
-  const { backendURL, loading } = useContext(AppContext)
-  const [cookies, setCookie, removeCookie] = useCookies()
+  const { backendURL } = useContext(AppContext)
+  const [cookies, , removeCookie] = useCookies()
 
   function redirect(path) {
     return () => {

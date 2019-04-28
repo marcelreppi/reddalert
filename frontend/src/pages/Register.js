@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useRef } from "react"
 import axios from "axios"
 
 import { AppContext } from "../contexts/AppProvider"
@@ -12,9 +12,9 @@ import Form, {
 import Alert from "../components/Alert"
 
 function Register() {
-  const emailInput = React.createRef()
-  const passwordInput = React.createRef()
-  const confirmedPasswordInput = React.createRef()
+  const emailInput = useRef(null)
+  const passwordInput = useRef(null)
+  const confirmedPasswordInput = useRef(null)
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")

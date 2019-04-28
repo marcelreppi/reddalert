@@ -1,4 +1,4 @@
-import React, { createContext } from "react"
+import React from "react"
 import { CookiesProvider } from "react-cookie"
 
 import AuthUserProvider from "./contexts/AuthUserProvider"
