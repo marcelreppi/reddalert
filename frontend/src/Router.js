@@ -1,5 +1,6 @@
-import React, { useContext } from "react"
+import React from "react"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
+import { connect } from "react-redux"
 
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -10,14 +11,13 @@ import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Contact from "./pages/Contact"
 import NotFound from "./pages/NotFound"
 
-import { AuthUserContext } from "./contexts/AuthUserProvider"
-
-function Router() {
-  const { authUser, isUserAuthenticated } = useContext(AuthUserContext)
-
+function Router(routerProps) {
   function PrivateRoute({ component: Component, ...rest }) {
     function render(props) {
-      if (isUserAuthenticated() && props.match.params.mail === authUser) {
+      if (
+        routerProps.loggedIn === true &&
+        props.match.params.mail === routerProps.userEmail
+      ) {
         return <Component {...props} />
       } else {
         return <Unauthenticated />
@@ -42,4 +42,14 @@ function Router() {
   )
 }
 
-export default Router
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.user.loggedIn,
+    userEmail: state.user.email,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(Router)

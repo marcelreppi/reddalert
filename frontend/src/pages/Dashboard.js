@@ -1,8 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
+import { connect } from "react-redux"
 // import { Link } from "react-router-dom"
 // import axios from "axios"
 
-import { AuthUserContext } from "../contexts/AuthUserProvider"
 import Layout from "../components/Layout"
 // import SubredditsGrid from "../components/SubredditsGrid"
 // import SubredditsCards from "../components/SubredditsCards"
@@ -10,15 +10,13 @@ import Layout from "../components/Layout"
 import "../styles/Dashboard.css"
 
 function Dashboard(props) {
-  const { authUser } = useContext(AuthUserContext)
-
   return (
     <Layout>
       <h1>Dashboard</h1>
 
       <div className="dashboard-email">
         Notifications for
-        <h3>{authUser}</h3>
+        <h3>{props.email}</h3>
       </div>
       <div className="dashboard-subreddits">
         {/* <span>Registered subreddits</span> */}
@@ -30,4 +28,13 @@ function Dashboard(props) {
   )
 }
 
-export default Dashboard
+const mapStateToProps = state => {
+  return {
+    email: state.user.email,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(Dashboard)

@@ -1,7 +1,7 @@
-import React, { useState, useContext, useRef } from "react"
+import React, { useState, useRef } from "react"
 import axios from "axios"
+import { connect } from "react-redux"
 
-import { AppContext } from "../contexts/AppProvider"
 import Layout from "../components/Layout"
 import Form, {
   Label,
@@ -11,14 +11,13 @@ import Form, {
 } from "../components/Form"
 import Alert from "../components/Alert"
 
-function Register() {
+function Register(props) {
   const emailInput = useRef(null)
   const passwordInput = useRef(null)
   const confirmedPasswordInput = useRef(null)
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
-  const { backendURL } = useContext(AppContext)
 
   async function submitForm(e) {
     console.log("Submit Registration")
@@ -27,7 +26,7 @@ function Register() {
     const password = passwordInput.current.value
     const confirmedPassword = confirmedPasswordInput.current.value
 
-    const { data } = await axios.post(backendURL + "/register", {
+    const { data } = await axios.post(props.backendUrl + "/register", {
       email,
       password,
       confirmedPassword,
@@ -71,4 +70,13 @@ function Register() {
   )
 }
 
-export default Register
+const mapStateToProps = state => {
+  return {
+    backendUrl: state.app.backendUrl,
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(Register)

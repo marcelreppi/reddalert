@@ -1,18 +1,16 @@
-import React, { useContext } from "react"
+import React from "react"
 import { withRouter } from "react-router-dom"
 import { useCookies } from "react-cookie"
 import axios from "axios"
 import styled from "styled-components"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 
-import { AppContext } from "../contexts/AppProvider"
-import { AuthUserContext } from "../contexts/AuthUserProvider"
+import { setLoading } from "../reducers/app"
+import { logout } from "../reducers/user"
 import ColorLine from "./ColorLine"
 
 function NavBar(props) {
-  const { authUser, setAuthUser, isUserAuthenticated } = useContext(
-    AuthUserContext
-  )
-  const { backendURL } = useContext(AppContext)
   const [cookies, , removeCookie] = useCookies()
 
   function redirect(path) {
@@ -31,9 +29,9 @@ function NavBar(props) {
 
   async function logout() {
     const { sessionId } = cookies.session
-    await axios.post(backendURL + "/logout", { sessionId })
+    await axios.post(props.backendUrl + "/logout", { sessionId })
     removeCookie("session")
-    setAuthUser(null)
+    props.logout()
     props.history.push("/")
   }
 
@@ -45,12 +43,12 @@ function NavBar(props) {
         </Item>
         <Item
           active={isActive("dashboard")}
-          onClick={redirect("/dashboard/" + authUser)}
+          onClick={redirect("/dashboard/" + props.user)}
         >
           Dashboard
         </Item>
         <Item onClick={logout}>Log out</Item>
-        {/* <div>Logged in as {authUser}</div> */}
+        {/* <div>Logged in as {user}</div> */}
       </React.Fragment>
     )
   }
@@ -78,14 +76,37 @@ function NavBar(props) {
           {/* <span>Logo</span> */}
           <span>Reddalert</span>
         </SiteName>
-        {isUserAuthenticated() ? loggedInNavBar() : loggedOutNavBar()}
+        {props.loggedIn === true ? loggedInNavBar() : loggedOutNavBar()}
       </ItemContainer>
       <ColorLine />
     </NavBarContainer>
   )
 }
 
-export default withRouter(NavBar)
+const mapStateToProps = state => {
+  return {
+    loggedIn: state.user.loggedIn,
+    backendUrl: state.app.backendUrl,
+    loading: state.app.loading,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setLoading,
+      logout,
+    },
+    dispatch
+  )
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NavBar)
+)
 
 ////////////////////////////// Styled Components /////////////////////////////
 

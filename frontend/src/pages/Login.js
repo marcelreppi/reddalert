@@ -1,9 +1,10 @@
-import React, { useState, useContext, useRef } from "react"
+import React, { useState, useRef } from "react"
 import axios from "axios"
 import { useCookies } from "react-cookie"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 
-import { AppContext } from "../contexts/AppProvider"
-import { AuthUserContext } from "../contexts/AuthUserProvider"
+import { login, setRememberUser } from "../reducers/user"
 import Layout from "../components/Layout"
 import Form, {
   Label,
@@ -25,8 +26,6 @@ function Login(props) {
   const [alertMsg, setAlertMsg] = useState("")
 
   const [, setCookie] = useCookies()
-  const { setAuthUser, setRememberUser } = useContext(AuthUserContext)
-  const { backendURL } = useContext(AppContext)
 
   async function submitForm(e) {
     console.log("Submit Login")
@@ -34,7 +33,7 @@ function Login(props) {
     const email = emailInput.current.value.toLowerCase()
     const password = passwordInput.current.value
 
-    const { data } = await axios.post(backendURL + "/login", {
+    const { data } = await axios.post(props.backendUrl + "/login", {
       email,
       password,
     })
@@ -47,13 +46,13 @@ function Login(props) {
     }
 
     hideAlert()
-    setRememberUser(rememberCheckBox.current.checked)
+    props.setRememberUser(rememberCheckBox.current.checked)
 
     // Set authorized user
-    setAuthUser(data.user.email)
+    props.login(data.user.email)
     setCookie("session", {
       sessionId: data.sessionId,
-      authUser: data.user.email,
+      user: data.user.email,
     })
 
     // Redirect to dashboard
@@ -83,4 +82,23 @@ function Login(props) {
   )
 }
 
-export default Login
+const mapStateToProps = state => {
+  return {
+    backendUrl: state.app.backendUrl,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      setRememberUser,
+      login,
+    },
+    dispatch
+  )
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login)

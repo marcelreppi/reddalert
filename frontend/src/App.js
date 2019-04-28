@@ -1,10 +1,13 @@
 import React from "react"
+import { Provider } from "react-redux"
 
 import Router from "./Router"
-import Store from "./Store"
+import store from "./store"
+
+import "./styles/App.css"
 
 export default () => (
-  <Store>
+  <Provider store={store}>
     <Router />
-  </Store>
+  </Provider>
 )
