@@ -1,33 +1,44 @@
 import React, { useEffect } from "react"
-import { useCookies } from "react-cookie"
+import Cookies from "universal-cookie"
 
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import axios from "axios"
 
-import { login } from "./reducers/user"
+import { login, setRememberUser } from "./reducers/user"
 import { setLoading } from "./reducers/app"
 import Router from "./Router"
 
 import "./styles/App.css"
 
 function App(props) {
-  const [cookies] = useCookies()
+  const cookies = new Cookies()
+  console.log(cookies.getAll())
 
   useEffect(() => {
     console.log("Check for session")
-    props.setLoading(true)
     // Check if there is still an active session
-    if (cookies.session) {
+    if (cookies.get("session")) {
       console.log("Restore session")
+      props.setLoading(true)
       axios
-        .get(props.backendUrl + `/session/${cookies.session.sessionId}`)
+        .get(props.backendUrl + `/session/${cookies.get("session").sessionId}`)
         .then(({ data }) => {
           props.login(data.email)
           props.setLoading(false)
+          // User wanted to be remembered last time so remember him for the next time
+          props.setRememberUser(true)
         })
+      return
     }
+    props.setLoading(false)
   }, [cookies.sessionId])
+
+  window.onbeforeunload = e => {
+    if (!props.rememberUser) {
+      cookies.remove("session")
+    }
+  }
 
   return (
     <React.Fragment>
@@ -39,6 +50,7 @@ function App(props) {
 const mapStateToProps = state => {
   return {
     backendUrl: state.app.backendUrl,
+    rememberUser: state.user.rememberUser,
   }
 }
 
@@ -47,6 +59,7 @@ const mapDispatchToProps = dispatch => {
     {
       setLoading,
       login,
+      setRememberUser,
     },
     dispatch
   )

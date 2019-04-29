@@ -10,7 +10,7 @@ export function setLoading(loading) {
 
 const initialState = {
   backendUrl: "http://localhost:3001",
-  loading: false,
+  loading: true,
 }
 
 // Reducer

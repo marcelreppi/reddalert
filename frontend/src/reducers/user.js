@@ -43,6 +43,7 @@ function app(state = initialState, action) {
         ...state,
         email: null,
         loggedIn: false,
+        rememberUser: false,
       }
     case SET_REMEMBER_USER:
       return {

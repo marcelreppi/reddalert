@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react"
 import axios from "axios"
-import { useCookies } from "react-cookie"
+import Cookies from "universal-cookie"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 
@@ -25,7 +25,7 @@ function Login(props) {
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
 
-  const [, setCookie] = useCookies()
+  const cookies = new Cookies()
 
   async function submitForm(e) {
     console.log("Submit Login")
@@ -50,7 +50,7 @@ function Login(props) {
 
     // Set authorized user
     props.login(data.user.email)
-    setCookie("session", {
+    cookies.set("session", {
       sessionId: data.sessionId,
       user: data.user.email,
     })

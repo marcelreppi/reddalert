@@ -10,10 +10,15 @@ import Unauthenticated from "./pages/Unauthenticated"
 import PrivacyPolicy from "./pages/PrivacyPolicy"
 import Contact from "./pages/Contact"
 import NotFound from "./pages/NotFound"
+import Loading from "./pages/Loading"
 
 function Router(routerProps) {
   function PrivateRoute({ component: Component, ...rest }) {
     function render(props) {
+      if (routerProps.loading) {
+        return <Loading />
+      }
+
       if (
         routerProps.loggedIn === true &&
         props.match.params.mail === routerProps.userEmail
@@ -46,6 +51,7 @@ const mapStateToProps = state => {
   return {
     loggedIn: state.user.loggedIn,
     userEmail: state.user.email,
+    loading: state.app.loading,
   }
 }
 

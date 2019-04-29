@@ -1,6 +1,6 @@
 import React from "react"
 import { withRouter } from "react-router-dom"
-import { useCookies } from "react-cookie"
+import Cookies from "universal-cookie"
 import axios from "axios"
 import styled from "styled-components"
 import { connect } from "react-redux"
@@ -11,7 +11,7 @@ import { logout } from "../reducers/user"
 import ColorLine from "./ColorLine"
 
 function NavBar(props) {
-  const [cookies, , removeCookie] = useCookies()
+  const cookies = new Cookies()
 
   function redirect(path) {
     return () => {
@@ -28,9 +28,9 @@ function NavBar(props) {
   }
 
   async function logout() {
-    const { sessionId } = cookies.session
+    const { sessionId } = cookies.get("session")
+    cookies.remove("session")
     await axios.post(props.backendUrl + "/logout", { sessionId })
-    removeCookie("session")
     props.logout()
     props.history.push("/")
   }
@@ -43,12 +43,11 @@ function NavBar(props) {
         </Item>
         <Item
           active={isActive("dashboard")}
-          onClick={redirect("/dashboard/" + props.user)}
+          onClick={redirect("/dashboard/" + props.user.email)}
         >
           Dashboard
         </Item>
         <Item onClick={logout}>Log out</Item>
-        {/* <div>Logged in as {user}</div> */}
       </React.Fragment>
     )
   }
@@ -69,6 +68,18 @@ function NavBar(props) {
     )
   }
 
+  function renderNavBar() {
+    if (props.loading) {
+      return <Placeholder>Placeholder</Placeholder>
+    }
+
+    if (props.user.loggedIn) {
+      return loggedInNavBar()
+    } else {
+      return loggedOutNavBar()
+    }
+  }
+
   return (
     <NavBarContainer>
       <ItemContainer>
@@ -76,7 +87,7 @@ function NavBar(props) {
           {/* <span>Logo</span> */}
           <span>Reddalert</span>
         </SiteName>
-        {props.loggedIn === true ? loggedInNavBar() : loggedOutNavBar()}
+        {renderNavBar()}
       </ItemContainer>
       <ColorLine />
     </NavBarContainer>
@@ -85,7 +96,7 @@ function NavBar(props) {
 
 const mapStateToProps = state => {
   return {
-    loggedIn: state.user.loggedIn,
+    user: state.user,
     backendUrl: state.app.backendUrl,
     loading: state.app.loading,
   }
@@ -121,6 +132,11 @@ const ItemContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: var(--padding-top) 0px 15px 0px;
+  height: 40px;
+`
+
+const Placeholder = styled.div`
+  color: #2b2d42;
 `
 
 const Item = styled.div`
