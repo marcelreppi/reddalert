@@ -6,6 +6,7 @@ const uuidv4 = require("uuid/v4")
 
 const { getUserSubreddits } = require("../database/subredditDAO")
 const userDAO = require("../database/userDAO")
+const sessionDAO = require("../database/sessionDAO")
 
 exports.getUserSubreddits = async (req, res, next) => {
   const userData = await getUserSubreddits(req.params.email)
@@ -13,8 +14,14 @@ exports.getUserSubreddits = async (req, res, next) => {
 }
 
 exports.getUserSessionData = async (req, res) => {
-  const userData = await userDAO.getUserBySessionId(req.params.sessionId)
-  res.json({ email: userData.email })
+  const user = await userDAO.getUserBySessionId(req.params.sessionId)
+
+  if (!user) {
+    res.sendStatus(404)
+    return
+  }
+
+  res.json({ email: user.email, subreddits: user.subreddits })
 }
 
 ////////////////////////////////// LOGIN /////////////////////////////////////
@@ -48,14 +55,20 @@ exports.login = async (req, res) => {
     }
 
     const sessionId = uuidv4()
-    await userDAO.saveSession(user.email, sessionId)
-    res.json({ user, sessionId })
+    await sessionDAO.saveSession(user.email, sessionId)
+    res.json({
+      user: {
+        email: user.email,
+        subreddits: user.subreddits,
+      },
+      sessionId,
+    })
   })(req, res)
 }
 
 exports.logout = async (req, res) => {
   console.log("Logout")
-  await userDAO.deleteSession(req.body.sessionId)
+  await sessionDAO.deleteSession(req.body.sessionId)
   res.json({})
 }
 

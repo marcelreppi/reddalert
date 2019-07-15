@@ -1,6 +1,5 @@
 import React from "react"
 import { withRouter } from "react-router-dom"
-import Cookies from "universal-cookie"
 import axios from "axios"
 import styled from "styled-components"
 import { connect } from "react-redux"
@@ -11,8 +10,6 @@ import { logout } from "../reducers/user"
 import ColorLine from "./ColorLine"
 
 function NavBar(props) {
-  const cookies = new Cookies()
-
   function redirect(path) {
     return () => {
       props.history.push(path)
@@ -28,8 +25,9 @@ function NavBar(props) {
   }
 
   async function logout() {
-    const { sessionId } = cookies.get("session")
-    cookies.remove("session")
+    const sessionId = localStorage.getItem("sessionId")
+    localStorage.removeItem("sessionId")
+    console.log(localStorage.getItem("sessionId"))
     await axios.post(props.backendUrl + "/logout", { sessionId })
     props.logout()
     props.history.push("/")
@@ -41,10 +39,7 @@ function NavBar(props) {
         <Item active={isActive("home")} onClick={redirect("/")}>
           Home
         </Item>
-        <Item
-          active={isActive("dashboard")}
-          onClick={redirect("/dashboard/" + props.user.email)}
-        >
+        <Item active={isActive("dashboard")} onClick={redirect("/dashboard")}>
           Dashboard
         </Item>
         <Item onClick={logout}>Log out</Item>
@@ -89,6 +84,7 @@ function NavBar(props) {
         </SiteName>
         {renderNavBar()}
       </ItemContainer>
+
       <ColorLine />
     </NavBarContainer>
   )
@@ -124,9 +120,9 @@ export default withRouter(
 const NavBarContainer = styled.div`
   background-color: #2b2d42;
   color: #edf2f4;
-  text-align: center;
   font-size: 20px;
 `
+
 const ItemContainer = styled.div`
   --padding-top: 25px;
   display: flex;
@@ -140,10 +136,9 @@ const Placeholder = styled.div`
 `
 
 const Item = styled.div`
-  margin: 0px 80px;
+  margin: 0px 5vw;
   padding-bottom: 6px;
-  border-bottom: ${props =>
-    props.active ? "2px white solid" : "2px #2b2d42 solid"};
+  border-bottom: ${props => (props.active ? "2px white solid" : "2px #2b2d42 solid")};
   &:hover {
     border-bottom: 2px white solid;
     cursor: pointer;
@@ -153,7 +148,7 @@ const Item = styled.div`
 const SiteName = styled.div`
   position: absolute;
   top: var(--padding-top);
-  left: 300px;
+  left: 50px;
   &:hover {
     cursor: pointer;
   }

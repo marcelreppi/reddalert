@@ -7,11 +7,11 @@ import Footer from "./Footer"
 
 function Layout(props) {
   return (
-    <LayoutContainer>
+    <Container>
       <NavBar />
       <ContentContainer>{props.children}</ContentContainer>
       <Footer />
-    </LayoutContainer>
+    </Container>
   )
 }
 
@@ -19,14 +19,18 @@ export default Layout
 
 ////////////////////// Styled Components ///////////////
 
-const LayoutContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
 `
 
 const ContentContainer = styled.div`
-  text-align: center;
-  margin: 40px 500px;
-  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding-top: 50px;
 `

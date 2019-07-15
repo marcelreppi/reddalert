@@ -3,12 +3,7 @@ import axios from "axios"
 import { connect } from "react-redux"
 
 import Layout from "../components/Layout"
-import Form, {
-  Label,
-  TextInput,
-  PasswordInput,
-  SubmitButton,
-} from "../components/Form"
+import Form, { Label, TextInput, PasswordInput, SubmitButton } from "../components/Form"
 import Alert from "../components/Alert"
 
 function Register(props) {

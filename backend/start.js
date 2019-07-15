@@ -1,20 +1,26 @@
 // Set environment variables
-require("dotenv").config({ path: "variables.env" })
+require("dotenv").config()
 const cron = require("node-cron")
 
-const app = require("./app.js")
-const { checkReddit } = require("./crawler.js")
+async function start() {
+  const db = require("./database/db")
+  await db.connectToDB()
 
-// Trigger the cron job
-// Check reddit every hour
-cron.schedule("0 * * * *", async () => {
-  console.log("Checking reddit!")
-  await checkReddit()
-})
+  // Trigger the cron job
+  // Check reddit every hour
+  const { checkReddit } = require("./crawler.js")
+  cron.schedule("0 * * * *", async () => {
+    console.log("Checking reddit!")
+    // await checkReddit() FIX ME
+  })
 
-// Start server
-const PORT = 3001
-app.listen(PORT, async () => {
-  console.log("Server listening at http://localhost:" + PORT)
-  // await checkReddit()
-})
+  // Start server
+  const app = require("./app.js")
+  const PORT = 3001
+  app.listen(PORT, async () => {
+    console.log("Server listening at http://localhost:" + PORT)
+    // await checkReddit()
+  })
+}
+
+start()

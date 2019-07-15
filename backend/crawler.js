@@ -8,9 +8,7 @@ const bot = require("./bot.js")
 const latestPostCreated = {}
 
 async function fetchJSONFeed(subreddit) {
-  const response = await axios.get(
-    `https://www.reddit.com/r/${subreddit}/new.json?limit=100`
-  )
+  const response = await axios.get(`https://www.reddit.com/r/${subreddit}/new.json?limit=100`)
   const feed = response.data.data.children
 
   // Find latest post from that subreddit and remove already seen posts
@@ -25,6 +23,7 @@ async function fetchJSONFeed(subreddit) {
 }
 
 async function checkReddit() {
+  // FIX ME
   const entries = await getAllSubreddits()
 
   const cachedUpdates = {}
@@ -55,11 +54,7 @@ async function checkReddit() {
     }
 
     if (matchingPosts.length > 0) {
-      const result = await sendNotification(
-        entry.email,
-        entry.subreddit,
-        matchingPosts
-      )
+      const result = await sendNotification(entry.email, entry.subreddit, matchingPosts)
       console.log(result)
     }
   }

@@ -1,5 +1,5 @@
 // Set environment variables
-require("dotenv").config({ path: "variables.env" })
+require("dotenv").config()
 
 process.env.NODE_ENV = "dev" // Make sure dev environment is set
 

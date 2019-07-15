@@ -1,10 +1,9 @@
 import React, { useState, useRef } from "react"
 import axios from "axios"
-import Cookies from "universal-cookie"
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 
-import { login, setRememberUser } from "../reducers/user"
+import { login, setRememberUser, setSubreddits } from "../reducers/user"
 import Layout from "../components/Layout"
 import Form, {
   Label,
@@ -24,8 +23,6 @@ function Login(props) {
 
   const [showAlert, setShowAlert] = useState(false)
   const [alertMsg, setAlertMsg] = useState("")
-
-  const cookies = new Cookies()
 
   async function submitForm(e) {
     console.log("Submit Login")
@@ -47,16 +44,14 @@ function Login(props) {
 
     hideAlert()
     props.setRememberUser(rememberCheckBox.current.checked)
-
+    console.log(data)
     // Set authorized user
     props.login(data.user.email)
-    cookies.set("session", {
-      sessionId: data.sessionId,
-      user: data.user.email,
-    })
+    props.setSubreddits(data.user.subreddits)
+    localStorage.setItem("sessionId", data.sessionId)
 
     // Redirect to dashboard
-    props.history.push(`/dashboard/${data.user.email}`)
+    props.history.push(`/dashboard`)
   }
 
   function hideAlert() {
@@ -93,6 +88,7 @@ const mapDispatchToProps = dispatch => {
     {
       setRememberUser,
       login,
+      setSubreddits,
     },
     dispatch
   )

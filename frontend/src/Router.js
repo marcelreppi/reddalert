@@ -1,6 +1,7 @@
 import React from "react"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 import { connect } from "react-redux"
+// import axios from "axios"
 
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -19,14 +20,11 @@ function Router(routerProps) {
         return <Loading />
       }
 
-      if (
-        routerProps.loggedIn === true &&
-        props.match.params.mail === routerProps.userEmail
-      ) {
+      if (routerProps.loggedIn === true) {
         return <Component {...props} />
-      } else {
-        return <Unauthenticated />
       }
+
+      return <Unauthenticated />
     }
 
     return <Route {...rest} render={render} />
@@ -40,7 +38,7 @@ function Router(routerProps) {
         <Route exact path="/register" component={Register} />
         <Route exact path="/contact" component={Contact} />
         <Route exact path="/privacy" component={PrivacyPolicy} />
-        <PrivateRoute path="/dashboard/:mail" component={Dashboard} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
         <Route component={NotFound} />
       </Switch>
     </BrowserRouter>
@@ -52,6 +50,7 @@ const mapStateToProps = state => {
     loggedIn: state.user.loggedIn,
     userEmail: state.user.email,
     loading: state.app.loading,
+    backendUrl: state.app.backendUrl,
   }
 }
 

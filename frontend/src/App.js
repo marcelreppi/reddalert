@@ -1,50 +1,47 @@
 import React, { useEffect } from "react"
-import Cookies from "universal-cookie"
-
 import { connect } from "react-redux"
 import { bindActionCreators } from "redux"
 import axios from "axios"
 
-import { login, setRememberUser } from "./reducers/user"
+import { login, setRememberUser, setSubreddits } from "./reducers/user"
 import { setLoading } from "./reducers/app"
 import Router from "./Router"
 
 import "./styles/App.css"
 
 function App(props) {
-  const cookies = new Cookies()
-  console.log(cookies.getAll())
-
   useEffect(() => {
     console.log("Check for session")
     // Check if there is still an active session
-    if (cookies.get("session")) {
+    if (localStorage.getItem("sessionId")) {
       console.log("Restore session")
       props.setLoading(true)
       axios
-        .get(props.backendUrl + `/session/${cookies.get("session").sessionId}`)
+        .get(props.backendUrl + `/session/${localStorage.getItem("sessionId")}`)
         .then(({ data }) => {
+          console.log(data)
           props.login(data.email)
+          props.setSubreddits(data.subreddits)
           props.setLoading(false)
           // User wanted to be remembered last time so remember him for the next time
           props.setRememberUser(true)
         })
+        .catch(e => {
+          console.log(e)
+          props.setLoading(false)
+        })
       return
     }
     props.setLoading(false)
-  }, [cookies.sessionId])
+  })
 
   window.onbeforeunload = e => {
     if (!props.rememberUser) {
-      cookies.remove("session")
+      localStorage.removeItem("sessionId")
     }
   }
 
-  return (
-    <React.Fragment>
-      <Router />
-    </React.Fragment>
-  )
+  return <Router />
 }
 
 const mapStateToProps = state => {
@@ -60,6 +57,7 @@ const mapDispatchToProps = dispatch => {
       setLoading,
       login,
       setRememberUser,
+      setSubreddits,
     },
     dispatch
   )
