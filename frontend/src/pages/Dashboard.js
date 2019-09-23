@@ -4,25 +4,17 @@ import { connect } from "react-redux"
 // import axios from "axios"
 
 import Layout from "../components/Layout"
-// import SubredditsGrid from "../components/SubredditsGrid"
-// import SubredditsCards from "../components/SubredditsCards"
+import SubredditsGrid from "../components/SubredditsGrid"
+import SubredditsCards from "../components/SubredditsCards"
 
 import "../styles/Dashboard.css"
 
 function Dashboard(props) {
   return (
     <Layout>
-      <h1>Dashboard</h1>
-
-      <div className="dashboard-email">
-        Notifications for
-        <h3>{props.email}</h3>
-      </div>
+      <h1>Registered Subreddits</h1>
       <div className="dashboard-subreddits">
-        {/* <span>Registered subreddits</span> */}
-        {/* <SubredditsGrid subreddits={this.state.subreddits} /> */}
-        {/* <SubredditsCards subreddits={this.state.subreddits} /> */}
-        {/* <button className="subreddit-button">Add subreddit</button> */}
+        <SubredditsCards subreddits={props.subreddits} />
       </div>
     </Layout>
   )
@@ -31,6 +23,7 @@ function Dashboard(props) {
 const mapStateToProps = state => {
   return {
     email: state.user.email,
+    subreddits: state.user.subreddits,
   }
 }
 
