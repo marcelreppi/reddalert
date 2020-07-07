@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/marcelreppi/reddalert#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "bcrypt": "^3.0.6",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
