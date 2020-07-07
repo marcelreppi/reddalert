@@ -1,4 +1,4 @@
-const MongoClient = require("mongodb").MongoClient
+const { MongoClient } = require("mongodb")
 
 const MONGODB_URL =
   process.env.NODE_ENV === "production" ? process.env.MONGODB_PROD_URL : process.env.MONGODB_DEV_URL
@@ -17,6 +17,4 @@ exports.connectToDB = async () => {
     .catch(error => console.error(error))
 }
 
-exports.getDBClient = () => {
-  return db
-}
+exports.getDBClient = () => db
